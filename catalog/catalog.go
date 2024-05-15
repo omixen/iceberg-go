@@ -147,6 +147,8 @@ type Catalog interface {
 	ListTables(ctx context.Context, namespace table.Identifier) ([]table.Identifier, error)
 	// LoadTable loads a table from the catalog and returns a Table with the metadata.
 	LoadTable(ctx context.Context, identifier table.Identifier, props iceberg.Properties) (*table.Table, error)
+	// CreateTable tells the catalog to create a new table with the given properties
+	CreateTable(ctx context.Context, identifier table.Identifier) error
 	// DropTable tells the catalog to drop the table entirely
 	DropTable(ctx context.Context, identifier table.Identifier) error
 	// RenameTable tells the catalog to rename a given table by the identifiers

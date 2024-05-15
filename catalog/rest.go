@@ -625,8 +625,29 @@ func (r *RestCatalog) LoadTable(ctx context.Context, identifier table.Identifier
 	return table.New(id, ret.Metadata, ret.MetadataLoc, iofs), nil
 }
 
+func (r *RestCatalog) CreateTable(ctx context.Context, identifier table.Identifier) error {
+	ns, tbl, err := splitIdentForPath(identifier)
+	if err != nil {
+		return err
+	}
+
+	_, err = doPost[CreateTableRequest, CreateTableResponse](ctx, r.baseURI, []string{"namespaces", ns, "tables", tbl}, CreateTableRequest{}, r.cl, map[int]error{http.StatusNotFound: ErrNoSuchNamespace})
+	return err
+}
+
+type CreateTableRequest struct{}
+type CreateTableResponse struct{}
+
 func (r *RestCatalog) DropTable(ctx context.Context, identifier table.Identifier) error {
-	return fmt.Errorf("%w: [Rest Catalog] drop table", iceberg.ErrNotImplemented)
+	ns, tbl, err := splitIdentForPath(identifier)
+	if err != nil {
+		return err
+	}
+
+	_, err = doDelete[tblResponse](ctx, r.baseURI, []string{"namespaces", ns, "tables", tbl},
+		r.cl, map[int]error{http.StatusNotFound: ErrNoSuchTable})
+
+	return err
 }
 
 func (r *RestCatalog) RenameTable(ctx context.Context, from, to table.Identifier) (*table.Table, error) {
