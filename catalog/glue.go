@@ -125,6 +125,10 @@ func (c *GlueCatalog) CatalogType() CatalogType {
 	return Glue
 }
 
+func (c *GlueCatalog) CreateTable(ctx context.Context, identifier table.Identifier) error {
+	return fmt.Errorf("%w: [Glue Catalog] create table", iceberg.ErrNotImplemented)
+}
+
 func (c *GlueCatalog) DropTable(ctx context.Context, identifier table.Identifier) error {
 	return fmt.Errorf("%w: [Glue Catalog] drop table", iceberg.ErrNotImplemented)
 }
